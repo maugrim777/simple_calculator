@@ -2,6 +2,7 @@ const calculator = document.querySelector('.calculator')
 const display = calculator.querySelector('.calculator_display')
 const keys = calculator.querySelector('.calculator_keys')
 
+
 // Calculate
 
 const calculate = (n1, operator, n2) => {
@@ -26,6 +27,7 @@ const getKeyType = key => {
   ) return 'operator'
   return action
 }
+
 
 // Create result string
 
@@ -86,6 +88,7 @@ const updateCalculatorState = (key, calculator, calculatedValue, displayedNum) =
   } = calculator.dataset
 
   calculator.dataset.previousKeyType = keyType
+  
 
   if (keyType === 'operator') {
     calculator.dataset.operator = key.dataset.action
@@ -119,7 +122,6 @@ const updateCalculatorState = (key, calculator, calculatedValue, displayedNum) =
 const updateVisualState = (key, calculator) => {
   const keyType = getKeyType(key)
   Array.from(key.parentNode.children).forEach(k => k.classList.remove('is-depressed'))
-
   if (keyType === 'operator') key.classList.add('is-depressed')
   if (keyType === 'clear' && key.textContent !== 'AC') key.textContent = 'AC'
   if (keyType !== 'clear') {
@@ -133,10 +135,13 @@ const updateVisualState = (key, calculator) => {
 // Main
 
 
+// if button is clicked
 keys.addEventListener('click', e => {
   if (!e.target.matches('button')) return 
   const key = e.target
+  console.log(key)
   const displayedNum = display.textContent
+  
   const resultString = createResultString(key, displayedNum, calculator.dataset)
 
   display.textContent = resultString
@@ -145,5 +150,21 @@ keys.addEventListener('click', e => {
 })
 
 
+// if key is pressed
+document.addEventListener("keydown", event => {
+  let key_pressed = event.key;
+  switch(key_pressed) {
+    case "C" : key_pressed = "c";
+    case "Enter": key_pressed = "="
+  }
+  const button_pressed = document.getElementById(key_pressed)
+  const key = button_pressed
+  const displayedNum = display.textContent
+  
+  const resultString = createResultString(key, displayedNum, calculator.dataset)
 
+  display.textContent = resultString
+  updateCalculatorState(key, calculator, resultString, displayedNum)
+  updateVisualState(key, calculator)
+})
 
